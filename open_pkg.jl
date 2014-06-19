@@ -27,12 +27,23 @@ function get_method_target(m::Method)
 end
 
 # open the first method
-function of(f::Function)
+function getindex(m::Method, index::Int64)
+    current_m = m
+    for i in 1:(index -1)
+        current_m = m.next
+    end
+    current_m
+end
+
+function of(f::Function,index::Int64)
     mt = methods(json)
-    m = mt.defs # get Method
+    m = mt.defs[index] # get Method
 
     method_target = get_method_target(m)
     _open_method(m)
 end
+
+of(f::Function) = of(f,1)
 # using JSON
 # of(json)
+# of(json,2)
