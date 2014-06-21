@@ -7,6 +7,12 @@ else
     EDITOR = "emacs"
 end
 
+function get_julia_code_path()
+    pathes = split(ENV["PATH"],":")
+    indexes = find((p) -> match(r"julia",p) != nothing,pathes)
+    pathes[indexes[1]]
+end
+
 function _open_method(method_target)
     comment_str = string(EDITOR," ",method_target)
     e = Expr(:macrocall, symbol("@cmd"),comment_str)
