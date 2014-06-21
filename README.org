@@ -1,0 +1,15 @@
+First, I want to say, I am a bad English writor, but there are many good English readers, and for them, bad is better than nothing.
+
+** Open Code
+   Open code in an editor(sublime or emacs) in REPL.
+
+   Sometimes, when we write code, we want to see the source. So I think, it is helpful if we have such function.
+
+   It will try to find an editor by the `EDITOR` environment variable, if the `EDITOR` is not setted, it will use Emacs.
+
+*** Usage
+    1. `@op JSON` will open the JSON pakcage in an editor.
+    2. `of(string)` will open the string function in an editor. And you can use it by `of(string,2)` will open the second method(In REPL, when you type `string`, it will show many methods, and this will open the second one).
+
+*** Support
+    It is just support sublime and emacs in Mac. And if the editor is sublime, it will open the method's file, and cursor will be on the line of the method.
