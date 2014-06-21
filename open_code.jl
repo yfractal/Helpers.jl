@@ -8,6 +8,10 @@ else
     EDITOR = "emacs"
 end
 
+if EDITOR != "emacs" && EDITOR != "sublime"
+    warn("Sorry, the editor: $EDITOR may not supported now!")
+end
+
 function get_julia_code_path()
     pathes = split(ENV["PATH"],":")
     indexes = find((p) -> match(r"julia",p) != nothing,pathes)
@@ -30,8 +34,13 @@ function _is_julia_method(m::Method)
 end
 
 function _open_method(method_target)
-    comment_str = string(EDITOR," ",method_target)
-    println("You have run $comment_str")
+    open_command = EDITOR
+    if EDITOR == "emacs"
+        open_command = "open -na Emacs" # open a new emacs
+    end
+
+    comment_str = string(open_command," ",method_target)
+    println("You have run: $comment_str")
     e = Expr(:macrocall, symbol("@cmd"),comment_str)
     run(eval(e))
 end
@@ -69,11 +78,15 @@ function get_method_target(m::Method)
         for m_f in module_file
             path = joinpath(path,m_f)
         end
-        p = joinpath(path,string(code.file))
-
-        string(p,":",code.line)
+        file = joinpath(path,string(code.file))
     else
-        string(code.file,":",code.line)
+        file = code.file
+    end
+
+    if EDITOR == "sublime"
+        string(file,":",code.line) # open the line of the method
+    else
+        file # I didn't find a easy to let emacs open a line of a file...
     end
 end
 
