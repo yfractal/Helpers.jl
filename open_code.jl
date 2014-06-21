@@ -1,6 +1,4 @@
 # open a pkg
-# mt.defs will get the fist method
-
 
 PKG_DIR = Pkg.dir()
 
@@ -33,6 +31,7 @@ end
 
 function _open_method(method_target)
     comment_str = string(EDITOR," ",method_target)
+    println("You have run $comment_str")
     e = Expr(:macrocall, symbol("@cmd"),comment_str)
     run(eval(e))
 end
@@ -44,10 +43,38 @@ macro op(pkg)
 end
 # @op JSON
 
+# for +
+# m_module = ["Base"]
+
+# for Pkg.update
+# m_module = ["Base","Pkg"]
+
+
+# of(Pkg.update)
+
+# of(+)
 
 function get_method_target(m::Method)
     code = m.func.code
-    string(code.file,":",code.line)
+    if _is_julia_method(m)
+        # hope this can open a julia code right
+        # it may have bug..., anyway let it works.
+        m_module = split(string(code.module),".")
+        file_name = split(string(code.file),".jl")[1]
+        module_file = filter((mm) -> lowercase(mm) != file_name,
+                             m_module)
+        # if a file's name is "same" as the a module name, filter it out.
+
+        path = JULIA_CODE_PATH
+        for m_f in module_file
+            path = joinpath(path,m_f)
+        end
+        p = joinpath(path,string(code.file))
+
+        string(p,":",code.line)
+    else
+        string(code.file,":",code.line)
+    end
 end
 
 function getindex(m::Method, index::Int64)
@@ -63,7 +90,7 @@ function of(f::Function,index::Int64)
     m = mt.defs[index] # get Method
 
     method_target = get_method_target(m)
-    _open_method(m)
+    _open_method(method_target)
 end
 
 of(f::Function) = of(f,1)
