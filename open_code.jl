@@ -26,7 +26,7 @@ function get_method_target(m::Method)
     string(li.file,":",li.line)
 end
 
-# open the first method
+
 function getindex(m::Method, index::Int64)
     current_m = m
     for i in 1:(index -1)
@@ -36,7 +36,7 @@ function getindex(m::Method, index::Int64)
 end
 
 function of(f::Function,index::Int64)
-    mt = methods(json)
+    mt = methods(f)
     m = mt.defs[index] # get Method
 
     method_target = get_method_target(m)
